@@ -1,0 +1,32 @@
+<div class="mt-4 px-4 container">
+  <h3 class="ml-4 mb-4">Add course</h3>
+  <form method="POST" action="/courses/store">
+    <div class="mb-3">
+      <label>Name course</label>
+      <input type="text" class="form-control" name="name" id="name" />
+    </div>
+    <div class="mb-3">
+      <label>Description</label>
+      <input
+        type="text"
+        class="form-control"
+        id="description"
+        name="description"
+      />
+    </div>
+    <div class="mb-3">
+      <label class="">Image link</label>
+      <input type="text" class="form-control" name="image" id="image" />
+    </div>
+    <div class="mb-3">
+      <label class="">VideoId</label>
+      <input type="text" class="form-control" name="videoId" id="videoId" />
+    </div>
+    <div class="mb-3">
+      <label class="">Level</label>
+      <input type="text" class="form-control" name="level" id="level" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add course</button>
+  </form>
+</div>
