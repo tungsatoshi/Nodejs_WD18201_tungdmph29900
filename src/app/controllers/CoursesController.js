@@ -1,5 +1,6 @@
 const Course = require("../models/Course");
 const { mongooseToObject } = require("../../util/mongoose");
+const { schemaProduct } = require("../validations/productValidation");
 
 async function show(req, res) {
   try {
@@ -67,8 +68,19 @@ async function showAllProduct(req, res) {
 }
 async function postProduct(req, res) {
   try {
-    const course = new Course(req.body);
-    await course.save();
+    const { name, description, image, videoId, level } = req.body;
+    const { error } = schemaProduct.validate({ name, description });
+    if (error) {
+      return res.status(400).json({ message: error.message });
+    }
+    // await course.save();
+    await Course.create({
+      name,
+      description,
+      image,
+      videoId,
+      level,
+    });
     res.status(200).json({ message: "ok" });
     // res.redirect("/");
   } catch (error) {
