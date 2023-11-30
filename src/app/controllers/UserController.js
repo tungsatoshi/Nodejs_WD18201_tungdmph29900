@@ -2,7 +2,10 @@ const User = require("../models/UserModel");
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
-const { schema, schemaUsername } = require("../validations/userValidation");
+const {
+  schemaCreateUser,
+  schemaUpdateUser,
+} = require("../validations/userValidation");
 
 dotenv.config();
 
@@ -11,7 +14,7 @@ const { SECRET_CODE } = process.env;
 class UserController {
   async getAllUser(req, res) {
     try {
-      const users = await User.find();
+      const users = await User.find().select("-password");
       res.json(users);
     } catch (error) {
       res.status(400).json({ message: error.message });
@@ -20,7 +23,7 @@ class UserController {
 
   async getUserDetail(req, res) {
     try {
-      const user = await User.findById(req.params.id);
+      const user = await User.findById(req.params.id).select("-password");
       res.json(user);
     } catch (error) {
       res.status(400).json({ message: error.message });
@@ -30,15 +33,15 @@ class UserController {
   async updateUser(req, res) {
     try {
       const { username, email, password } = req.body;
-      let { error: usernameError } = schemaUsername.validate({ username });
-      if (usernameError) {
-        return res.status(400).json({ message: usernameError.message });
+      const { errors } = schemaUpdateUser.validate(req.body);
+      if (errors) {
+        res.status(400).json({ message: errors });
       }
-      let { error: generalError } = schema.validate({ email, password });
-      if (generalError) {
-        return res.status(400).json({ message: generalError.message });
-      }
-      await User.updateOne({ _id: req.params.id }, req.body);
+      const hashPassword = await bcryptjs.hash(password, 10);
+      await User.updateOne(
+        { _id: req.params.id },
+        { username, email, password: hashPassword }
+      );
       res.status(200).json({ message: "Update thanh cong" });
     } catch (error) {
       res.status(400).json({ message: error.message });
@@ -66,14 +69,14 @@ class UserController {
         });
       }
 
-      let { error: usernameError } = schemaUsername.validate({ username });
-      if (usernameError) {
-        return res.status(400).json({ message: usernameError.message });
+      const { errors } = schemaCreateUser.validate(req.body);
+      if (errors) {
+        return res.status(400).json({ errors });
       }
-      let { error: generalError } = schema.validate({ email, password });
-      if (generalError) {
-        return res.status(400).json({ message: generalError.message });
-      }
+      // let { error: generalError } = schema.validate({ email, password });
+      // if (generalError) {
+      //   return res.status(400).json({ message: generalError.message });
+      // }
       // Ma hoa mat khau
       const hashPassword = await bcryptjs.hash(password, 10);
       await User.create({

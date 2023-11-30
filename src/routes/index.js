@@ -4,10 +4,12 @@ const siteRouter = require("./site");
 const meRouter = require("./me");
 const users = require("./users");
 const categories = require("./categories");
+const upload = require("./upload");
 
 function route(app) {
   app.use("/news", newsRouter);
   app.use("/me", meRouter);
+  app.use("/upload", upload);
   app.use("/courses", coursesRouter);
   app.use("/categories", categories);
   app.use("/users", users);
