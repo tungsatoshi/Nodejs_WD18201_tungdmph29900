@@ -4,6 +4,10 @@ const { engine } = require("express-handlebars");
 const morgan = require("morgan");
 const methodOverride = require("method-override");
 
+const dotenv = require("dotenv");
+dotenv.config();
+const { DB_URL } = process.env;
+
 const app = express();
 const port = 3000;
 
@@ -11,7 +15,7 @@ const route = require("./routes");
 const db = require("./config/db");
 
 // Connect to DB
-db.connect();
+db.connect(DB_URL);
 
 app.use(express.static(path.join(__dirname, "public")));
 
