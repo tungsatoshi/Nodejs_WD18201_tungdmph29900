@@ -5,6 +5,7 @@ const dotenv = require("dotenv");
 const {
   schemaCreateUser,
   schemaUpdateUser,
+  schemaLoginUser,
 } = require("../validations/userValidation");
 
 dotenv.config();
@@ -96,7 +97,7 @@ class UserController {
       const { email, password } = req.body;
 
       // Validate form
-      const { error } = schema.validate(
+      const { error } = schemaLoginUser.validate(
         { email, password },
         { abortEarly: false }
       );
